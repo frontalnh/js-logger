@@ -8,21 +8,20 @@ const uppercase = format(data => {
   return data;
 });
 
+const addModule = moduleName =>
+  format(data => {
+    data['module'] = moduleName;
+
+    return data;
+  });
+
 const env = process.env.NODE_ENV || 'development';
 
 class JSLogger {
-  constructor(path) {
-    const defaultOptions = {
-      level: env === 'development' ? 'debug' : 'info',
-      format: combine(
-        uppercase(),
-        timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss'
-        }),
-        prettyPrint()
-      ),
-      transports: [
-        new winston.transports.Console(),
+  constructor({ path, writeFile = false }) {
+    let fileTransports = [];
+    if (writeFile) {
+      fileTransports = fileTransports.concat([
         new winston.transports.File({
           filename: path + '/error.log',
           level: 'error'
@@ -32,10 +31,25 @@ class JSLogger {
           level: 'debug'
         }),
         new winston.transports.File({ filename: path + '/info.log', level: 'info' })
-      ]
-    };
+      ]);
+    }
+    return moduleName => {
+      const defaultOptions = {
+        level: env === 'development' ? 'debug' : 'info',
+        format: combine(
+          uppercase(),
+          addModule(moduleName)(),
+          timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss'
+          }),
+          prettyPrint()
+        ),
+        transports: [new winston.transports.Console(), ...fileTransports]
+      };
+      this.winstonLogger = winston.createLogger(defaultOptions);
 
-    this.winstonLogger = winston.createLogger(defaultOptions);
+      return this;
+    };
   }
   info(message, ...meta) {
     this.winstonLogger.log({ level: 'info', message, ...meta });
