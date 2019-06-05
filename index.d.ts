@@ -1,7 +1,11 @@
-export interface logger {
-  init(path: string): void;
-  info(message: string, ...meta: any[]): void;
-  debug(message: string, ...meta: any[]): void;
-  warn(message: string, ...meta: any[]): void;
-  error(message: string, ...meta: any[]): void;
+declare namespace Logger {
+  class JSLogger {
+    constructor(path: string);
+    info(message: string, ...meta: any[]): void;
+    debug(message: string, ...meta: any[]): void;
+    warn(message: string, ...meta: any[]): void;
+    error(message: string, ...meta: any[]): void;
+  }
 }
+
+export = Logger;

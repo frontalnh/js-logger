@@ -1,11 +1,11 @@
 {
   "name": "@frontalnh/js-logger",
-  "version": "0.0.1",
+  "version": "0.1.5",
   "description": "JS logger implemented with winston",
   "repository": "frontalnh/js-logger",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest"
+    "test": "jest"
   },
   "author": "",
   "license": "MIT",

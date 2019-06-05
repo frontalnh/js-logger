@@ -10,8 +10,8 @@ const uppercase = format(data => {
 
 const env = process.env.NODE_ENV || 'development';
 
-exports.logger = {
-  init(path) {
+class JSLogger {
+  constructor(path) {
     const defaultOptions = {
       level: env === 'development' ? 'debug' : 'info',
       format: combine(
@@ -36,22 +36,22 @@ exports.logger = {
     };
 
     this.winstonLogger = winston.createLogger(defaultOptions);
-  },
+  }
   info(message, ...meta) {
     this.winstonLogger.log({ level: 'info', message, ...meta });
-  },
+  }
   warn(message, ...meta) {
     this.winstonLogger.log({ level: 'warn', message, ...meta });
-  },
+  }
   debug(message, ...meta) {
     this.winstonLogger.log({ level: 'debug', message, ...meta });
-  },
-  error(message) {
-    this.winstonLogger.log({ level: 'error', message, location: this.errLocation() });
-  },
+  }
+  error(message, err) {
+    this.winstonLogger.log({ level: 'error', message, location: this.errLocation(err) });
+  }
 
-  errLocation() {
-    const stack = new Error().stack;
+  errLocation(err) {
+    const stack = err.stack;
 
     const jsOrtsRegex = /((\/.*?.ts)|(\/.*?.js)).*?.\:.\w/g;
 
@@ -63,4 +63,6 @@ exports.logger = {
 
     return [];
   }
-};
+}
+
+exports.JSLogger = JSLogger;
