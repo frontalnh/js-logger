@@ -1,12 +1,8 @@
 const { LoggerFactory } = require('./index');
+const loggerFactory = new LoggerFactory({ path: '.' });
+const logger = loggerFactory.createLogger('<moduleName>');
 
 describe('test logger', () => {
-  let logger;
-  beforeAll(() => {
-    let loggerFactory = new LoggerFactory({});
-    logger = loggerFactory.createLogger('index');
-  });
-
   it('info', () => {
     logger.info('hello', { name: 'hello' }, { age: '10' });
   });

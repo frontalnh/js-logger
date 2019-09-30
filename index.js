@@ -63,16 +63,30 @@ class JSLogger {
     this.winstonLogger = winston.createLogger(defaultOptions);
   }
   info(message, ...meta) {
-    this.winstonLogger.log({ level: 'info', message, ...meta });
+    this.winstonLogger.log({ level: 'info', message, meta: { ...meta } });
   }
   warn(message, ...meta) {
-    this.winstonLogger.log({ level: 'warn', message, ...meta });
+    this.winstonLogger.log({ level: 'warn', message, meta: { ...meta } });
   }
   debug(message, ...meta) {
-    this.winstonLogger.log({ level: 'debug', message, ...meta });
+    this.winstonLogger.log({ level: 'debug', message, meta: { ...meta } });
   }
-  error(message, err) {
-    this.winstonLogger.log({ level: 'error', message, location: this.errLocation(err) });
+  error(...args) {
+    if (args.length === 1) {
+      this.winstonLogger.log({
+        level: 'error',
+        message: args[0].message,
+        errMsg: args[0].message,
+        location: this.errLocation(args[0])
+      });
+    } else {
+      this.winstonLogger.log({
+        level: 'error',
+        message: args[0],
+        errMsg: args[1].message,
+        location: this.errLocation(args[1])
+      });
+    }
   }
 
   errLocation(err) {

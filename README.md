@@ -1,27 +1,32 @@
 ```js
-const { JSLogger } = require('./index');
-const logger = new JSLogger({path:"<path>",writeFile:true);
-// or const logger = new JSLogger({writeFile:false);
+const { LoggerFactory } = require('./index');
+const loggerFactory = new LoggerFactory({ path: '.' })
+const logger = loggerFactory.createLogger("<moduleName>");
 
-logger("<moduleName>").info('hello', { message: 'hello' }, { age: '10' });
-logger("<moduleName>").error('error occured',err);
+logger.info('hello', { message: 'hello' }, { age: '10' });
+
+try {
+  throw new Error('hello');
+} catch (err) {
+  logger.error('error occured', err);
+  return;
+}
 
 ```
 
 output
 
-```
-{ '0': { name: 'hello' },
-  '1': { age: '10' },
-  level: 'INFO',
+```js
+{ level: 'INFO',
   message: 'hello',
+  meta: { '0': { name: 'hello' }, '1': { age: '10' } },
   module: '<moduleName>',
-  timestamp: '2019-06-05 10:14:35'}
+  timestamp: '2019-09-30 15:17:26' }
 
 { level: 'ERROR',
   message: 'error occured',
-  location:
-   [ '/Users/namhoonlee/Desktop/git/js-logger/index.test.js:14' ],
+  errMsg: 'hello',
+  location: [ '/home/namhoonlee/Desktop/git/js-logger/index.test.js:13' ],
   module: '<moduleName>',
-  timestamp: '2019-06-05 10:32:31' }
+  timestamp: '2019-09-30 15:17:26' }
 ```
