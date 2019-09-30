@@ -11,6 +11,7 @@ describe('test logger', () => {
       throw new Error('hello');
     } catch (err) {
       logger.error('error occured', err);
+      logger.error(err);
       return;
     }
   });
