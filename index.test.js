@@ -1,19 +1,18 @@
-const { JSLogger } = require('./index');
+const { LoggerFactory } = require('./index');
+const loggerFactory = new LoggerFactory({ path: '.' })
+const logger = loggerFactory.createLogger("<moduleName>");
 
 describe('test logger', () => {
-  let logger;
-  beforeAll(() => {
-    logger = new JSLogger({});
-  });
+
 
   it('info', () => {
-    logger('index').info('hello', { name: 'hello' }, { age: '10' });
+    logger.info('hello', { name: 'hello' }, { age: '10' });
   });
   it('error', () => {
     try {
       throw new Error('hello');
     } catch (err) {
-      logger('index').error('error occured', err);
+      logger.error('error occured', err);
       return;
     }
   });
