@@ -19,9 +19,9 @@ const env = process.env.NODE_ENV || 'development';
 
 class JSLogger {
   constructor({ path, writeFile = false }) {
-    let fileTransports = [];
+    this.fileTransports = [];
     if (writeFile) {
-      fileTransports = fileTransports.concat([
+      this.fileTransports = this.fileTransports.concat([
         new winston.transports.File({
           filename: path + '/error.log',
           level: 'error'
@@ -33,23 +33,34 @@ class JSLogger {
         new winston.transports.File({ filename: path + '/info.log', level: 'info' })
       ]);
     }
-    return moduleName => {
-      const defaultOptions = {
-        level: env === 'development' ? 'debug' : 'info',
-        format: combine(
-          uppercase(),
-          addModule(moduleName)(),
-          timestamp({
-            format: 'YYYY-MM-DD HH:mm:ss'
-          }),
-          prettyPrint()
-        ),
-        transports: [new winston.transports.Console(), ...fileTransports]
-      };
-      this.winstonLogger = winston.createLogger(defaultOptions);
-
-      return this;
+    const defaultOptions = {
+      level: env === 'development' ? 'debug' : 'info',
+      format: combine(
+        uppercase(),
+        addModule('UNREGISTERED')(),
+        timestamp({
+          format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        prettyPrint()
+      ),
+      transports: [new winston.transports.Console(), ...this.fileTransports]
     };
+    this.winstonLogger = winston.createLogger(defaultOptions);
+  }
+  register(moduleName) {
+    const defaultOptions = {
+      level: env === 'development' ? 'debug' : 'info',
+      format: combine(
+        uppercase(),
+        addModule(moduleName)(),
+        timestamp({
+          format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        prettyPrint()
+      ),
+      transports: [new winston.transports.Console(), ...this.fileTransports]
+    };
+    this.winstonLogger = winston.createLogger(defaultOptions);
   }
   info(message, ...meta) {
     this.winstonLogger.log({ level: 'info', message, ...meta });
@@ -79,4 +90,18 @@ class JSLogger {
   }
 }
 
-exports.JSLogger = JSLogger;
+class LoggerFactory {
+  constructor({ path, writeFile = false }) {
+    this.path = path;
+    this.writeFile = writeFile;
+  }
+
+  createLogger(moduleName) {
+    const logger = new JSLogger({ path: this.path, writeFile: this.writeFile });
+    logger.register(moduleName);
+
+    return logger;
+  }
+}
+
+exports.LoggerFactory = LoggerFactory;
