@@ -6,6 +6,10 @@ declare namespace Logger {
     warn(message: string, ...meta: any[]): void;
     error(message: string, ...meta: any[]): void;
   }
+
+  class LoggerFactory {
+    createLogger(moduleName): JSLogger
+  }
 }
 
 export = Logger;
