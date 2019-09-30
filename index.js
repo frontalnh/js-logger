@@ -52,16 +52,16 @@ class JSLogger {
     };
   }
   info(message, ...meta) {
-    this.winstonLogger.log({ level: 'info', message, ...meta });
+    this.winstonLogger.log({ level: 'info', message, metaData: { ...meta } });
   }
   warn(message, ...meta) {
-    this.winstonLogger.log({ level: 'warn', message, ...meta });
+    this.winstonLogger.log({ level: 'warn', message, metaData: { ...meta } });
   }
   debug(message, ...meta) {
-    this.winstonLogger.log({ level: 'debug', message, ...meta });
+    this.winstonLogger.log({ level: 'debug', message, metaData: { ...meta } });
   }
   error(message, err) {
-    this.winstonLogger.log({ level: 'error', message, location: this.errLocation(err) });
+    this.winstonLogger.log({ level: 'error', message, errMsg: err.message, location: this.errLocation(err) });
   }
 
   errLocation(err) {
