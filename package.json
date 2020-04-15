@@ -1,6 +1,6 @@
 {
   "name": "@frontalnh/js-logger",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "JS logger implemented with winston",
   "repository": "frontalnh/js-logger",
   "main": "index.js",
