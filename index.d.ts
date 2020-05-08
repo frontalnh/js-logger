@@ -9,8 +9,8 @@ declare namespace Logger {
   }
 
   class LoggerFactory {
-    constructor({ path, writeFile }: { path: string, writeFile?: boolean })
-    createLogger(moduleName): JSLogger
+    constructor({ path, writeFile }: { path: string; writeFile?: boolean });
+    createLogger(moduleName: string, type: string): JSLogger;
   }
 }
 

@@ -1,0 +1,29 @@
+{ level: 'INFO',
+  message: 'hello',
+  meta: { '0': { name: 'hello' }, '1': { age: '10' } },
+  module: '<moduleName>',
+  timestamp: '2019-10-28 10:35:53' }
+{ level: 'INFO',
+  type: 'GENERAL',
+  message: 'hello',
+  meta: { '0': { name: 'hello' }, '1': { age: '10' } },
+  module: '<moduleName>',
+  timestamp: '2019-10-28 10:50:46' }
+{ level: 'INFO',
+  type: 'GENERAL',
+  message: 'hello',
+  meta: [ { name: 'hello' }, { age: '10' } ],
+  module: '<moduleName>',
+  timestamp: '2019-10-28 10:52:04' }
+{ level: 'INFO',
+  type: 'GENERAL',
+  message: 'hello',
+  meta: [ { name: 'hello' }, { age: '10' } ],
+  module: '<moduleName>',
+  timestamp: '2019-10-28 10:52:44' }
+{ level: 'INFO',
+  type: 'GENERAL',
+  message: 'hello',
+  meta: [ { name: 'hello' }, { age: '10' } ],
+  module: '<moduleName>',
+  timestamp: '2020-01-02 14:35:29' }

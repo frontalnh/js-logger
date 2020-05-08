@@ -1,4 +1,4 @@
-const winston = require('winston');
+const winston = require("winston");
 const format = winston.format;
 const { combine, timestamp, label, prettyPrint, printf, splat } = format;
 
@@ -10,12 +10,12 @@ const uppercase = format(data => {
 
 const addModule = moduleName =>
   format(data => {
-    data['module'] = moduleName;
+    data["module"] = moduleName;
 
     return data;
   });
 
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || "development";
 
 class JSLogger {
   constructor({ path, writeFile = false }) {
@@ -23,23 +23,26 @@ class JSLogger {
     if (writeFile) {
       this.fileTransports = this.fileTransports.concat([
         new winston.transports.File({
-          filename: path + '/error.log',
-          level: 'error'
+          filename: path + "/error.log",
+          level: "error"
         }),
         new winston.transports.File({
-          filename: path + '/debug.log',
-          level: 'debug'
+          filename: path + "/debug.log",
+          level: "debug"
         }),
-        new winston.transports.File({ filename: path + '/info.log', level: 'info' })
+        new winston.transports.File({
+          filename: path + "/info.log",
+          level: "info"
+        })
       ]);
     }
     const defaultOptions = {
-      level: env === 'development' ? 'debug' : 'info',
+      level: env === "development" ? "debug" : "info",
       format: combine(
         uppercase(),
-        addModule('UNREGISTERED')(),
+        addModule("UNREGISTERED")(),
         timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss'
+          format: "YYYY-MM-DD HH:mm:ss"
         }),
         prettyPrint()
       ),
@@ -47,14 +50,15 @@ class JSLogger {
     };
     this.winstonLogger = winston.createLogger(defaultOptions);
   }
-  register(moduleName) {
+  register(moduleName, type) {
+    this.type = type;
     const defaultOptions = {
-      level: env === 'development' ? 'debug' : 'info',
+      level: env === "development" ? "debug" : "info",
       format: combine(
         uppercase(),
         addModule(moduleName)(),
         timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss'
+          format: "YYYY-MM-DD HH:mm:ss"
         }),
         prettyPrint()
       ),
@@ -63,28 +67,45 @@ class JSLogger {
     this.winstonLogger = winston.createLogger(defaultOptions);
   }
   info(message, ...meta) {
-    this.winstonLogger.log({ level: 'info', message, meta: { ...meta } });
+    this.winstonLogger.log({
+      level: "info",
+      type: this.type,
+      message,
+      meta
+    });
   }
   warn(message, ...meta) {
-    this.winstonLogger.log({ level: 'warn', message, meta: { ...meta } });
+    this.winstonLogger.log({
+      level: "warn",
+      type: this.type,
+      message,
+      meta
+    });
   }
   debug(message, ...meta) {
-    this.winstonLogger.log({ level: 'debug', message, meta: { ...meta } });
+    this.winstonLogger.log({
+      level: "debug",
+      type: this.type,
+      message,
+      meta
+    });
   }
   error(...args) {
     if (args.length === 1) {
       this.winstonLogger.log({
-        level: 'error',
+        level: "error",
         message: args[0].message,
         errMsg: args[0].message,
-        location: this.errLocation(args[0])
+        location: this.errLocation(args[0]),
+        type: this.type
       });
     } else {
       this.winstonLogger.log({
-        level: 'error',
+        level: "error",
         message: args[0],
         errMsg: args[1].message,
-        location: this.errLocation(args[1])
+        location: this.errLocation(args[1]),
+        type: this.type
       });
     }
   }
@@ -97,7 +118,9 @@ class JSLogger {
     let stackList = stack.match(jsOrtsRegex);
 
     if (stackList) {
-      return stackList.filter(v => !/.node_modules./.test(v)).filter(v => !/dist/g.test(v));
+      return stackList
+        .filter(v => !/.node_modules./.test(v))
+        .filter(v => !/dist/g.test(v));
     }
 
     return [];
@@ -110,9 +133,9 @@ class LoggerFactory {
     this.writeFile = writeFile;
   }
 
-  createLogger(moduleName) {
+  createLogger(moduleName, type = "GENERAL") {
     const logger = new JSLogger({ path: this.path, writeFile: this.writeFile });
-    logger.register(moduleName);
+    logger.register(moduleName, type);
 
     return logger;
   }
